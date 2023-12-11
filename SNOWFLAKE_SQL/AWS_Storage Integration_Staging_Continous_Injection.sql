@@ -22,8 +22,13 @@ LIST @retail_txns_aws_stage;
 
 SHOW STAGES;
 
+---CREATE SNOWPIPE THAT RECOGNISES CSV THAT ARE INGESTED FROM EXTERNAL STAGE AND COPIES THE DATA INTO EXISTING TABLE
+
+--The AUTO_INGEST=true parameter specifies to read 
+--- event notifications sent from an S3 bucket to an SQS queue when new data is ready to load.
+
 CREATE OR REPLACE PIPE RETAIL_SNOWPIPE_TRANSACTION AUTO_INGEST = TRUE AS
-COPY INTO AWS_DATABASE.PUBLIC.RETAIL_TXNS
+COPY INTO AWS_DATABASE.PUBLIC.RETAIL_TXNS    ------COPY INTO TABLE NAME @STAGING NAME FOLLOWED BY BUCKET FOLDER NAME----
 FROM '@retail_txns_aws_stage/retaildevelop/'
 FILE_FORMAT = AWS_RETAIL_TXNXS_CSV ;
 
@@ -31,6 +36,7 @@ SHOW PIPES;
 
 SELECT count(*) FROM RETAIL_TXNS;
 
+---------------------------------------------------------------PIPEREFRESH-----------------------------------------------------------------
 select * from RETAIL_TXNS;
 
 alter pipe RETAIL_SNOWPIPE_TRANSACTION refresh;
